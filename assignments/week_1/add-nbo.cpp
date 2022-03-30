@@ -37,6 +37,8 @@ int main(int argc, char *argv[]){\
     fread(&num1, sizeof(uint32_t), 1, num_1);
     fread(&num2, sizeof(uint32_t), 1, num_2);
 
+    printf("%x\n%x\n", num1, num2);
+
     num1 = reverse(num1);
     num2 = reverse(num2);
 
