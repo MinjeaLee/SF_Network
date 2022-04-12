@@ -1,19 +1,4 @@
-// Write a program that outputs important information by capturing packets sent and received.
-// Ethernet Header srcmac / dst mac
-// IP Header srcip / dstip
-// TCP Header src port / dst port
-// The hexadecimal value of the Payload (Data up to 8 bytes)
 
-// excute syntax: pcap-test <interface>
-// sample: pcap-test wlan0
-
-// detail
-// If it is determined that the TCP packet is caught, the above information is output (even if the data size is zero).
-// Declaring the header of a network packet as a structure makes it easier to work later, so search for and use the libnet library.
-// Easy-to-use structures in libnet-headers.h
-// struct libnet_ethernet_hdr
-// struct libnet_ipv4_hdr
-// struct libnet_tcp_hdr
 #include <pcap.h>
 #include <stdbool.h>
 #include <stdio.h>
