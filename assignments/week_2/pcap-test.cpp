@@ -14,16 +14,16 @@
 // struct libnet_ethernet_hdr
 // struct libnet_ipv4_hdr
 // struct libnet_tcp_hdr
-
 #include <pcap.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <libnet.h>
+// #include <libnet.h>
+#include "_libnet.h"
 
 void usage() {
-    printf("syntax: pcap-test <interface>\n");
-    printf("sample: pcap-test wlan0\n");
+    printf("syntax: sudo pcap-test <interface>\n");
+    printf("sample: sudo pcap-test wlan0\n");
 }
 
 int main(int argc, char* argv[]) {
