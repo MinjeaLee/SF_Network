@@ -46,14 +46,12 @@ int main(int argc, char* argv[]) {
         printf("Ethernet Header\n");
         printf("\tsrcmac: %02x:%02x:%02x:%02x:%02x:%02x\n", ethernet_header->ether_shost[0], ethernet_header->ether_shost[1], ethernet_header->ether_shost[2], ethernet_header->ether_shost[3], ethernet_header->ether_shost[4], ethernet_header->ether_shost[5]);
         printf("\tdstmac: %02x:%02x:%02x:%02x:%02x:%02x\n", ethernet_header->ether_dhost[0], ethernet_header->ether_dhost[1], ethernet_header->ether_dhost[2], ethernet_header->ether_dhost[3], ethernet_header->ether_dhost[4], ethernet_header->ether_dhost[5]);
-        printf("\ttype: %04x\n", ethernet_header->ether_type);
 
         // IP Header
         struct libnet_ipv4_hdr* ip_header = (struct libnet_ipv4_hdr*)(packet + sizeof(struct libnet_ethernet_hdr));
         printf("IP Header\n");
         printf("\tsrcip: %d.%d.%d.%d\n", ip_header->ip_src.s_addr & 0xff, (ip_header->ip_src.s_addr >> 8) & 0xff, (ip_header->ip_src.s_addr >> 16) & 0xff, (ip_header->ip_src.s_addr >> 24) & 0xff);
         printf("\tdstip: %d.%d.%d.%d\n", ip_header->ip_dst.s_addr & 0xff, (ip_header->ip_dst.s_addr >> 8) & 0xff, (ip_header->ip_dst.s_addr >> 16) & 0xff, (ip_header->ip_dst.s_addr >> 24) & 0xff);
-        printf("\tprotocol: %d\n", ip_header->ip_p);
 
         // TCP Header
         struct libnet_tcp_hdr* tcp_header = (struct libnet_tcp_hdr*)(packet + sizeof(struct libnet_ethernet_hdr) + sizeof(struct libnet_ipv4_hdr));
