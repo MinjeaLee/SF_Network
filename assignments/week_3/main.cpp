@@ -35,10 +35,7 @@ int main(int argc, char* argv[]) {
 	char* victim_ip = argv[2];
 	char* gateway_ip = argv[3];
 
-	// char* my_mac;
-
-	// my_mac = get_mac_address().c_str();
-
+	// my mac read start
 	int socket_fd; 
     int count_if; 
     struct ifreq *t_if_req; 
@@ -78,13 +75,9 @@ int main(int argc, char* argv[]) {
     } 
     close(socket_fd); 
     free(t_if_req);
+	//my mac read end
 
-
-	printf("%s", arr_mac_addr);
-
-	// char my_mac[20] = get_mac_address().c_str();
-	// printf("MAC address : [%s]\n", get_mac_address().c_str());
-
+	printf("%s", arr_mac_addr); // my mac print
 
 
 	char errbuf[PCAP_ERRBUF_SIZE];
