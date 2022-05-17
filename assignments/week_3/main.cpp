@@ -2,6 +2,14 @@
 #include <pcap.h>
 #include "ethhdr.h"
 #include "arphdr.h"
+#include <stdio.h> 
+#include <string.h> 
+#include <unistd.h> 
+#include <stdlib.h> 
+#include <netinet/ether.h> 
+#include <net/if.h> 
+#include <sys/ioctl.h> 
+#include <string>
 
 #pragma pack(push, 1)
 struct EthArpPacket final {
@@ -15,6 +23,53 @@ void usage() {
 	printf("arp-test wlan0 192.168.10.2 192.168.10.1\n");
 }
 
+using namespace std; 
+
+string get_mac_address(void) { 
+    int socket_fd; 
+    int count_if; 
+    struct ifreq *t_if_req; 
+    struct ifconf t_if_conf; 
+    static char arr_mac_addr[17] = {0x00, }; 
+    memset(&t_if_conf, 0, sizeof(t_if_conf)); 
+    t_if_conf.ifc_ifcu.ifcu_req = NULL; 
+    t_if_conf.ifc_len = 0; 
+    if( (socket_fd = socket(PF_INET, SOCK_DGRAM, 0)) < 0 ) {
+         return ""; 
+    } 
+    if( ioctl(socket_fd, SIOCGIFCONF, &t_if_conf) < 0 ) { 
+        return ""; 
+    } 
+    if( (t_if_req = (ifreq *)malloc(t_if_conf.ifc_len)) == NULL ) {
+        close(socket_fd); 
+        free(t_if_req); 
+        return ""; 
+    } 
+    else { 
+        t_if_conf.ifc_ifcu.ifcu_req = t_if_req; 
+        if( ioctl(socket_fd, SIOCGIFCONF, &t_if_conf) < 0 ) {
+            close(socket_fd); 
+            free(t_if_req); 
+            return ""; 
+        } 
+        count_if = t_if_conf.ifc_len / sizeof(struct ifreq);
+        for( int idx = 0; idx < count_if; idx++ ) { 
+            struct ifreq *req = &t_if_req[idx]; 
+            if( !strcmp(req->ifr_name, "lo") ) {
+                continue; 
+            } 
+            if( ioctl(socket_fd, SIOCGIFHWADDR, req) < 0 ) { 
+                break; 
+            } 
+            sprintf(arr_mac_addr, "%02x:%02x:%02x:%02x:%02x:%02x", (unsigned char)req->ifr_hwaddr.sa_data[0], (unsigned char)req->ifr_hwaddr.sa_data[1], (unsigned char)req->ifr_hwaddr.sa_data[2], (unsigned char)req->ifr_hwaddr.sa_data[3], (unsigned char)req->ifr_hwaddr.sa_data[4], (unsigned char)req->ifr_hwaddr.sa_data[5]); 
+            break;
+        } 
+    } 
+    close(socket_fd); 
+    free(t_if_req); 
+    return arr_mac_addr; 
+}
+
 int main(int argc, char* argv[]) {
 	if (argc != 4) {
 		usage();
@@ -24,6 +79,57 @@ int main(int argc, char* argv[]) {
 	char* dev = argv[1];
 	char* victim_ip = argv[2];
 	char* gateway_ip = argv[3];
+
+	// char* my_mac;
+
+	// my_mac = get_mac_address().c_str();
+
+	int socket_fd; 
+    int count_if; 
+    struct ifreq *t_if_req; 
+    struct ifconf t_if_conf; 
+    static char arr_mac_addr[17] = {0x00, }; 
+    memset(&t_if_conf, 0, sizeof(t_if_conf)); 
+    t_if_conf.ifc_ifcu.ifcu_req = NULL; 
+    t_if_conf.ifc_len = 0; 
+    if( (socket_fd = socket(PF_INET, SOCK_DGRAM, 0)) < 0 ) {
+         
+    } 
+    if( ioctl(socket_fd, SIOCGIFCONF, &t_if_conf) < 0 ) { 
+         
+    } 
+    if( (t_if_req = (ifreq *)malloc(t_if_conf.ifc_len)) == NULL ) {
+        close(socket_fd); 
+        free(t_if_req); 
+    } 
+    else { 
+        t_if_conf.ifc_ifcu.ifcu_req = t_if_req; 
+        if( ioctl(socket_fd, SIOCGIFCONF, &t_if_conf) < 0 ) {
+            close(socket_fd); 
+            free(t_if_req); 
+        } 
+        count_if = t_if_conf.ifc_len / sizeof(struct ifreq);
+        for( int idx = 0; idx < count_if; idx++ ) { 
+            struct ifreq *req = &t_if_req[idx]; 
+            if( !strcmp(req->ifr_name, "lo") ) {
+                continue; 
+            } 
+            if( ioctl(socket_fd, SIOCGIFHWADDR, req) < 0 ) { 
+                break; 
+            } 
+            sprintf(arr_mac_addr, "%02x:%02x:%02x:%02x:%02x:%02x", (unsigned char)req->ifr_hwaddr.sa_data[0], (unsigned char)req->ifr_hwaddr.sa_data[1], (unsigned char)req->ifr_hwaddr.sa_data[2], (unsigned char)req->ifr_hwaddr.sa_data[3], (unsigned char)req->ifr_hwaddr.sa_data[4], (unsigned char)req->ifr_hwaddr.sa_data[5]); 
+            break;
+        } 
+    } 
+    close(socket_fd); 
+    free(t_if_req);
+
+
+	printf("%s", arr_mac_addr);
+
+	// char my_mac[20] = get_mac_address().c_str();
+	// printf("MAC address : [%s]\n", get_mac_address().c_str());
+
 
 
 	char errbuf[PCAP_ERRBUF_SIZE];
